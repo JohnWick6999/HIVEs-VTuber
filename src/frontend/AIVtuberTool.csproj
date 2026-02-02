@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <EnableDefaultPageItems>false</EnableDefaultPageItems>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Page Include="KawaiiMainWindow.xaml" />
+    <Page Include="KawaiiStyles.xaml" />
+    <Page Include="LauncherWindow.xaml" />
+    <Page Include="MainWindow.xaml" />
+    <Page Include="ModernMainWindow.xaml" />
+    <Page Include="ModernStyles.xaml" />
+    <Page Include="NewMainWindow.xaml" />
+    <Page Include="SimpleMainWindow.xaml" />
+    <Page Include="TestWindow.xaml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="KawaiiMainWindow.xaml.cs">
+      <DependentUpon>KawaiiMainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="LauncherWindow.xaml.cs">
+      <DependentUpon>LauncherWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="MainWindow.xaml.cs">
+      <DependentUpon>MainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="ModernMainWindow.xaml.cs">
+      <DependentUpon>ModernMainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="NewMainWindow.xaml.cs">
+      <DependentUpon>NewMainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="SimpleMainWindow.xaml.cs">
+      <DependentUpon>SimpleMainWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="TestWindow.xaml.cs">
+      <DependentUpon>TestWindow.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+</Project>

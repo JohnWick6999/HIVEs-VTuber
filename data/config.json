@@ -1,0 +1,51 @@
+{
+  "chat_api": {
+    "api_key": "sk-e4b872b156584ddb932b767be0bbe938",
+    "base_url": "https://api.deepseek.com",
+    "model": "deepseek-chat",
+    "temperature": 0.7,
+    "max_tokens": 1024
+  },
+  "voice_api": {
+    "tts": {
+      "api_key": "sk-a5e4d75ae5aa4961acc01d5a71f7b117",
+      "base_url": "https://dashscope.aliyuncs.com",
+      "voice": "default",
+      "engine": "qwen"
+    },
+    "asr": {
+      "api_key": "",
+      "base_url": ""
+    }
+  },
+  "image_api": {
+    "api_key": "",
+    "base_url": ""
+  },
+  "search_api": {
+    "api_key": "sk-rQs2r8xQtwFDwIAyV6XReB7kYeib8WhCyoZESBoGG8aau1BO",
+    "base_url": "https://api.moonshot.cn",
+    "model": "moonshot-v1-8k"
+  },
+  "database": {
+    "enabled": false,
+    "db_path": "chat_history.db"
+  },
+  "obs": {
+    "enabled": false,
+    "host": "localhost",
+    "port": 4444,
+    "password": ""
+  },
+  "vtuber_studio": {
+    "enabled": false,
+    "host": "localhost",
+    "port": 8001
+  },
+  "personality": {
+    "name": "AI Vtuber",
+    "description": "一个友好的AI虚拟主播",
+    "greeting": "你好！我是你的AI虚拟主播，很高兴认识你！",
+    "tone": "活泼、友好、幽默"
+  }
+}

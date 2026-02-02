@@ -1,0 +1,50 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual Environment
+venv/
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.venv/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build
+build/
+dist/
+*.egg-info/
+
+# Logs
+logs/
+*.log
+
+# Database
+*.db
+
+# Audio files
+test_*.mp3
+test_*.wav
+*_preview.wav
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# API Keys
+# Note: Keep API keys in config.json but don't commit actual keys
+# If you have actual keys, use environment variables instead

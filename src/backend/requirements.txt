@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+flask
+openai
+requests
+pysqlite3
+python-dotenv
+obs-websocket-py
+pyttsx3
+SpeechRecognition
+Pillow
+opencv-python
+socketio-client

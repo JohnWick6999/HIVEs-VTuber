@@ -1,0 +1,691 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Window x:Class="AIVtuberTool.KawaiiMainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:AIVtuberTool"
+        mc:Ignorable="d"
+        Title="NekoShizukuAI - AI VTuber Control Center (Kawaii Edition)"
+        Height="900"
+        Width="1400"
+        WindowState="Maximized"
+        Background="#FFF8F8FF"
+        Foreground="#FF333366">
+    
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="./KawaiiStyles.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </Window.Resources>
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <!-- 顶部装饰栏 -->
+        <Border Grid.Row="0" Background="#FFE8E8FF" 
+                BorderBrush="#FF6A6AFF" 
+                BorderThickness="0,0,0,3"
+                CornerRadius="0,0,20,20" 
+                Padding="20,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                
+                <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                    <TextBlock Text="🐱 NekoShizukuAI" FontSize="28" FontWeight="Bold" Foreground="{StaticResource PrimaryColor}" Margin="0,0,20,0"/>
+                    
+                    <Button x:Name="HomeButton" Content="🏠 首页" 
+                            Background="#FFE8E8FF"
+                            Foreground="#FF333366"
+                            BorderBrush="#FF6A6AFF"
+                            BorderThickness="2"
+                            Height="35"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Padding="10,5"
+                            Margin="0,0,10,0">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="20"
+                                                    Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#FF6A6AFF"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter Property="Background" Value="#FF5555CC"/>
+                                                    <Setter Property="BorderBrush" Value="#FF5555CC"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.6"/>
+                                                    <Setter Property="Background" Value="#FFE0E0EE"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="ChatButton" Content="💭 对话" 
+                            Background="#FFE8E8FF"
+                            Foreground="#FF333366"
+                            BorderBrush="#FF6A6AFF"
+                            BorderThickness="2"
+                            Height="35"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Padding="10,5"
+                            Margin="0,0,10,0">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="20"
+                                                    Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#FF6A6AFF"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter Property="Background" Value="#FF5555CC"/>
+                                                    <Setter Property="BorderBrush" Value="#FF5555CC"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.6"/>
+                                                    <Setter Property="Background" Value="#FFE0E0EE"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="ControlButton" Content="🎮 控制台" 
+                            Background="#FFE8E8FF"
+                            Foreground="#FF333366"
+                            BorderBrush="#FF6A6AFF"
+                            BorderThickness="2"
+                            Height="35"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Padding="10,5"
+                            Margin="0,0,10,0">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="20"
+                                                    Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#FF6A6AFF"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter Property="Background" Value="#FF5555CC"/>
+                                                    <Setter Property="BorderBrush" Value="#FF5555CC"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.6"/>
+                                                    <Setter Property="Background" Value="#FFE0E0EE"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="SettingsButton" Content="⚙️ 设置" 
+                            Background="#FFE8E8FF"
+                            Foreground="#FF333366"
+                            BorderBrush="#FF6A6AFF"
+                            BorderThickness="2"
+                            Height="35"
+                            FontSize="14"
+                            FontWeight="SemiBold"
+                            Padding="10,5"
+                            Margin="0,0,10,0">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="20"
+                                                    Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#FF6A6AFF"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter Property="Background" Value="#FF5555CC"/>
+                                                    <Setter Property="BorderBrush" Value="#FF5555CC"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.6"/>
+                                                    <Setter Property="Background" Value="#FFE0E0EE"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+                
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                    <TextBlock x:Name="ConnectionStatusText" 
+                               Text="🔴 未连接" 
+                               FontSize="16" 
+                               FontWeight="Bold"
+                               VerticalAlignment="Center" 
+                               Margin="0,0,15,0"
+                               Foreground="{StaticResource ErrorColor}"/>
+                    <Button x:Name="RefreshConnectionButton" 
+                            Content="🔄 刷新" 
+                            Style="{StaticResource KawaiiButtonStyle}" 
+                            Width="90" 
+                            Height="35" 
+                            Margin="0,0,10,0"/>
+                    <Button x:Name="ExitButton" 
+                            Content="🚪 退出" 
+                            Style="{StaticResource KawaiiButtonStyle}" 
+                            Width="80" 
+                            Height="35"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        
+        <!-- 主内容区域 -->
+        <Grid Grid.Row="1" Margin="20,20,20,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="250"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <!-- 左侧萌系边栏 -->
+            <Border Grid.Column="0" 
+                    Background="{StaticResource SecondaryColor}" 
+                    BorderBrush="{StaticResource BorderColor}" 
+                    BorderThickness="3"
+                    CornerRadius="20" 
+                    Margin="0,0,15,0"
+                    Padding="15">
+                <StackPanel>
+                    <TextBlock Text="🐾 功能面板" 
+                               FontSize="20" 
+                               FontWeight="Bold" 
+                               Foreground="{StaticResource PrimaryColor}" 
+                               Margin="0,0,0,20"
+                               HorizontalAlignment="Center"/>
+                    
+                    <Button x:Name="ChatPanelButton" 
+                            Content="💬 对话中心" 
+                            Style="{StaticResource KawaiiButtonStyle}" 
+                            Margin="0,0,0,10"
+                            Height="40"/>
+                    <Button x:Name="VoicePanelButton" 
+                            Content="🎙️ 语音控制" 
+                            Style="{StaticResource KawaiiButtonStyle}" 
+                            Margin="0,0,0,10"
+                            Height="40"/>
+                    <Button x:Name="MediaPanelButton" 
+                            Content="🖼️ 媒体处理" 
+                            Style="{StaticResource KawaiiButtonStyle}" 
+                            Margin="0,0,0,10"
+                            Height="40"/>
+                    <Button x:Name="OBSPanelButton" 
+                            Content="📹 OBS控制" 
+                            Style="{StaticResource KawaiiButtonStyle}" 
+                            Margin="0,0,0,10"
+                            Height="40"/>
+                    <Button x:Name="VTSPanelButton" 
+                            Content="🎭 VTube控制" 
+                            Style="{StaticResource KawaiiButtonStyle}" 
+                            Margin="0,0,0,10"
+                            Height="40"/>
+                    <Button x:Name="PersonalityPanelButton" 
+                            Content="💝 人格设定" 
+                            Background="#FFE8E8FF"
+                            Foreground="#FF333366"
+                            BorderBrush="#FF6A6AFF"
+                            BorderThickness="2"
+                            Margin="0,0,0,10"
+                            Height="40">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="20"
+                                                    Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#FF6A6AFF"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter Property="Background" Value="#FF5555CC"/>
+                                                    <Setter Property="BorderBrush" Value="#FF5555CC"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.6"/>
+                                                    <Setter Property="Background" Value="#FFE0E0EE"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="ConfigPanelButton" 
+                            Content="🔧 配置管理" 
+                            Background="#FFE8E8FF"
+                            Foreground="#FF333366"
+                            BorderBrush="#FF6A6AFF"
+                            BorderThickness="2"
+                            Margin="0,0,0,10"
+                            Height="40">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="20"
+                                                    Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#FF6A6AFF"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter Property="Background" Value="#FF5555CC"/>
+                                                    <Setter Property="BorderBrush" Value="#FF5555CC"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.6"/>
+                                                    <Setter Property="Background" Value="#FFE0E0EE"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                    <Button x:Name="LogsPanelButton" 
+                            Content="📋 日志监控" 
+                            Background="#FFE8E8FF"
+                            Foreground="#FF333366"
+                            BorderBrush="#FF6A6AFF"
+                            BorderThickness="2"
+                            Margin="0,0,0,10"
+                            Height="40">
+                        <Button.Style>
+                            <Style TargetType="Button">
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="Button">
+                                            <Border Background="{TemplateBinding Background}"
+                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                    CornerRadius="20"
+                                                    Padding="{TemplateBinding Padding}">
+                                                <ContentPresenter HorizontalAlignment="Center"
+                                                                  VerticalAlignment="Center"/>
+                                            </Border>
+                                            <ControlTemplate.Triggers>
+                                                <Trigger Property="IsMouseOver" Value="True">
+                                                    <Setter Property="Background" Value="#FF6A6AFF"/>
+                                                    <Setter Property="Foreground" Value="White"/>
+                                                </Trigger>
+                                                <Trigger Property="IsPressed" Value="True">
+                                                    <Setter Property="Background" Value="#FF5555CC"/>
+                                                    <Setter Property="BorderBrush" Value="#FF5555CC"/>
+                                                </Trigger>
+                                                <Trigger Property="IsEnabled" Value="False">
+                                                    <Setter Property="Opacity" Value="0.6"/>
+                                                    <Setter Property="Background" Value="#FFE0E0EE"/>
+                                                </Trigger>
+                                            </ControlTemplate.Triggers>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </Button.Style>
+                    </Button>
+                </StackPanel>
+            </Border>
+            
+            <!-- 右侧内容区域 -->
+            <ScrollViewer Grid.Column="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="10">
+                    <!-- 状态概览卡片 -->
+                    <Border Background="#FFE8E8FF" CornerRadius="15" Margin="0,0,0,20" Padding="15">
+                        <Grid Margin="5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <Border Grid.Column="0" Background="#FFE8E8FF" CornerRadius="15" Margin="5" Padding="10">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="Backend Service" FontSize="14" Foreground="#FF333366" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="BackendStatusValue" Text="🔴 Not Running" FontSize="16" FontWeight="Bold" Foreground="#FFE57373" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <Border Grid.Column="1" Background="#FFE8E8FF" CornerRadius="15" Margin="5" Padding="10">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="OBS Connection" FontSize="14" Foreground="#FF333366" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="OBSStatusValue" Text="🔴 Disconnected" FontSize="16" FontWeight="Bold" Foreground="#FFE57373" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <Border Grid.Column="2" Background="#FFE8E8FF" CornerRadius="15" Margin="5" Padding="10">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="VTS Connection" FontSize="14" Foreground="#FF333366" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="VTSStatusValue" Text="🔴 Disconnected" FontSize="16" FontWeight="Bold" Foreground="#FFE57373" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </Border>
+                            
+                            <Border Grid.Column="3" Background="#FFE8E8FF" CornerRadius="15" Margin="5" Padding="10">
+                                <StackPanel HorizontalAlignment="Center">
+                                    <TextBlock Text="AI Status" FontSize="14" Foreground="#FF333366" HorizontalAlignment="Center"/>
+                                    <TextBlock x:Name="AIStatusValue" Text="🔴 Not Ready" FontSize="16" FontWeight="Bold" Foreground="#FFE57373" HorizontalAlignment="Center" Margin="0,5,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
+                    </Border>
+                    
+                    <!-- 对话区域 -->
+                    <Expander Header="💬 对话中心" IsExpanded="True" Margin="0,0,0,20">
+                        <Border Background="#FFE8E8FF" CornerRadius="15" Padding="15" Margin="0,5,0,0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                
+                                <ScrollViewer Grid.Row="0" x:Name="ChatHistoryScrollViewer" VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl x:Name="ChatHistoryList" Background="Transparent"/>
+                                </ScrollViewer>
+                                
+                                <Grid Grid.Row="1" Margin="0,10,0,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    
+                                    <Border Background="White" BorderBrush="#FF6A6AFF" BorderThickness="2" CornerRadius="10">
+                                        <TextBox x:Name="ChatInputTextBox" 
+                                                 Height="60"
+                                                 TextWrapping="Wrap"
+                                                 AcceptsReturn="True"
+                                                 VerticalScrollBarVisibility="Auto"
+                                                 FontSize="14"
+                                                 Padding="15"/>
+                                    </Border>
+                                    <Button x:Name="SendMessageButton" 
+                                            Grid.Column="1" 
+                                            Content="📤 发送" 
+                                            Background="#FF6A6AFF"
+                                            Foreground="White"
+                                            BorderBrush="#FF6A6AFF"
+                                            BorderThickness="2"
+                                            Width="90" 
+                                            Height="60"
+                                            Margin="10,0,0,0"
+                                            FontSize="14"
+                                            FontWeight="SemiBold"
+                                            Padding="10,5">
+                                        <Button.Style>
+                                            <Style TargetType="Button">
+                                                <Setter Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate TargetType="Button">
+                                                            <Border Background="{TemplateBinding Background}"
+                                                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                                                    CornerRadius="20"
+                                                                    Padding="{TemplateBinding Padding}">
+                                                                <ContentPresenter HorizontalAlignment="Center"
+                                                                                  VerticalAlignment="Center"/>
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="#FF5555CC"/>
+                                                                    <Setter Property="Foreground" Value="White"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsPressed" Value="True">
+                                                                    <Setter Property="Background" Value="#FF5555CC"/>
+                                                                    <Setter Property="BorderBrush" Value="#FF5555CC"/>
+                                                                </Trigger>
+                                                                <Trigger Property="IsEnabled" Value="False">
+                                                                    <Setter Property="Opacity" Value="0.6"/>
+                                                                    <Setter Property="Background" Value="#FFE0E0EE"/>
+                                                                </Trigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </Expander>
+                    
+                    <!-- 快捷控制按钮 -->
+                    <Expander Header="⚡ 快捷控制" IsExpanded="True" Margin="0,0,0,20" Style="{StaticResource KawaiiExpanderStyle}">
+                        <Border Style="{StaticResource KawaiiBorderStyle}" Padding="15" Margin="0,5,0,0">
+                            <WrapPanel Orientation="Horizontal" ItemWidth="150" ItemHeight="45">
+                                <Button x:Name="StartRecordingButton" Content="⏺️ 开始录制" Style="{StaticResource KawaiiButtonStyle}" Margin="5"/>
+                                <Button x:Name="StopRecordingButton" Content="⏹️ 停止录制" Style="{StaticResource KawaiiButtonStyle}" Margin="5"/>
+                                <Button x:Name="StartStreamingButton" Content="🎬 开始推流" Style="{StaticResource KawaiiButtonStyle}" Margin="5"/>
+                                <Button x:Name="StopStreamingButton" Content="❌ 停止推流" Style="{StaticResource KawaiiButtonStyle}" Margin="5"/>
+                                <Button x:Name="ConnectOBSButton" Content="🔌 连接OBS" Style="{StaticResource KawaiiButtonStyle}" Margin="5"/>
+                                <Button x:Name="ConnectVTSButton" Content="🔌 连接VTS" 
+                                        Background="#FFE8E8FF"
+                                        Foreground="#FF333366"
+                                        BorderBrush="#FF6A6AFF"
+                                        BorderThickness="2"
+                                        Margin="5">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                                CornerRadius="20"
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter HorizontalAlignment="Center"
+                                                                              VerticalAlignment="Center"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#FF6A6AFF"/>
+                                                                <Setter Property="Foreground" Value="White"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Setter Property="Background" Value="#FF5555CC"/>
+                                                                <Setter Property="BorderBrush" Value="#FF5555CC"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsEnabled" Value="False">
+                                                                <Setter Property="Opacity" Value="0.6"/>
+                                                                <Setter Property="Background" Value="#FFE0E0EE"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <Button x:Name="StartASRButton" Content="🎤 开始听写" 
+                                        Background="#FFE8E8FF"
+                                        Foreground="#FF333366"
+                                        BorderBrush="#FF6A6AFF"
+                                        BorderThickness="2"
+                                        Margin="5">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                                CornerRadius="20"
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter HorizontalAlignment="Center"
+                                                                              VerticalAlignment="Center"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#FF6A6AFF"/>
+                                                                <Setter Property="Foreground" Value="White"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Setter Property="Background" Value="#FF5555CC"/>
+                                                                <Setter Property="BorderBrush" Value="#FF5555CC"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsEnabled" Value="False">
+                                                                <Setter Property="Opacity" Value="0.6"/>
+                                                                <Setter Property="Background" Value="#FFE0E0EE"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <Button x:Name="StopASRButton" Content="🔇 停止听写" 
+                                        Background="#FFE8E8FF"
+                                        Foreground="#FF333366"
+                                        BorderBrush="#FF6A6AFF"
+                                        BorderThickness="2"
+                                        Margin="5">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                BorderBrush="{TemplateBinding BorderBrush}"
+                                                                BorderThickness="{TemplateBinding BorderThickness}"
+                                                                CornerRadius="20"
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <ContentPresenter HorizontalAlignment="Center"
+                                                                              VerticalAlignment="Center"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#FF6A6AFF"/>
+                                                                <Setter Property="Foreground" Value="White"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Setter Property="Background" Value="#FF5555CC"/>
+                                                                <Setter Property="BorderBrush" Value="#FF5555CC"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsEnabled" Value="False">
+                                                                <Setter Property="Opacity" Value="0.6"/>
+                                                                <Setter Property="Background" Value="#FFE0E0EE"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </WrapPanel>
+                        </Border>
+                    </Expander>
+                    
+                    <!-- 人格设定预览 -->
+                    <Expander Header="💝 当前人格设定" IsExpanded="False" Margin="0,0,0,20">
+                        <Border Background="#FFE8E8FF" CornerRadius="15" Padding="15" Margin="0,5,0,0">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                
+                                <TextBlock Grid.Row="0" x:Name="CurrentPersonaName" Text="人格名称：" FontSize="16" FontWeight="Bold" Foreground="#FF6A6AFF" Margin="0,0,0,5"/>
+                                <TextBlock Grid.Row="1" x:Name="CurrentPersonaDescription" Text="人格描述：" FontSize="14" Foreground="#FF333366" Margin="0,5,0,5"/>
+                                <TextBlock Grid.Row="2" x:Name="CurrentPersonaGreeting" Text="问候语：" FontSize="14" Foreground="#FF333366" Margin="0,5,0,5"/>
+                                <TextBlock Grid.Row="3" x:Name="CurrentPersonaTone" Text="语气：" FontSize="14" Foreground="#FF333366" Margin="0,5,0,0"/>
+                            </Grid>
+                        </Border>
+                    </Expander>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+    </Grid>
+</Window>
