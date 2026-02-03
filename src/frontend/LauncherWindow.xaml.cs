@@ -21,9 +21,9 @@ namespace AIVtuberTool
 
         private void SetupEventHandlers()
         {
-            LaunchClassicButton.Click += async (s, e) => await LaunchClassicInterface();
-            LaunchModernButton.Click += async (s, e) => await LaunchModernInterface();
-            LaunchKawaiiButton.Click += async (s, e) => await LaunchKawaiiInterface();
+            LaunchClassicButton.Click += async (s, e) => { await LaunchClassicInterface(); };
+            LaunchModernButton.Click += async (s, e) => { await LaunchModernInterface(); };
+            LaunchKawaiiButton.Click += async (s, e) => { await LaunchKawaiiInterface(); };
         }
 
         private async void CheckBackendStatus()
@@ -150,19 +150,23 @@ namespace AIVtuberTool
             try
             {
                 // 尝试启动后端服务 - 使用绝对路径
-                string projectRoot = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(
+                string? projectRoot = System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(
                     System.IO.Path.GetDirectoryName(System.IO.Path.GetDirectoryName(System.IO.Directory.GetCurrentDirectory())))));
-                string backendPath = System.IO.Path.Combine(projectRoot, "src", "backend");
                 
-                var startInfo = new ProcessStartInfo
+                if (projectRoot != null)
                 {
-                    FileName = "cmd.exe",
-                    Arguments = $"/C cd /d \"{backendPath}\" && python main.py",
-                    UseShellExecute = true,
-                    CreateNoWindow = false
-                };
-                
-                Process.Start(startInfo);
+                    string backendPath = System.IO.Path.Combine(projectRoot, "src", "backend");
+                    
+                    var startInfo = new ProcessStartInfo
+                    {
+                        FileName = "cmd.exe",
+                        Arguments = $"/C cd /d \"{backendPath}\" && python main.py",
+                        UseShellExecute = true,
+                        CreateNoWindow = false
+                    };
+                    
+                    Process.Start(startInfo);
+                }
             }
             catch (Exception ex)
             {

@@ -48,3 +48,44 @@ test_*.wav
 # API Keys
 # Note: Keep API keys in config.json but don't commit actual keys
 # If you have actual keys, use environment variables instead
+
+# 编译输出目录
+bin/
+obj/
+
+# Python 虚拟环境
+.venv/
+.venv1/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# 音频文件
+*.wav
+*.mp3
+*.ogg
+*.flac
+
+# 日志文件
+*.log
+
+# 临时文件
+*.tmp
+*.temp
+
+# Windows 相关
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# VS Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# 系统文件
+.DS_Store

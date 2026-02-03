@@ -5,9 +5,21 @@ from typing import Dict, Any, Optional
 class ConfigManager:
     """配置管理类"""
     
-    def __init__(self, config_file: str = "../../data/config.json"):
+    def __init__(self, config_file: str = None):
         """初始化配置管理器"""
-        self.config_file = config_file
+        # 使用绝对路径，确保在任何目录下都能正确找到配置文件
+        if config_file is None:
+            # 获取当前文件的绝对路径
+            current_dir = os.path.dirname(os.path.abspath(__file__))
+            # 构建配置文件的绝对路径
+            self.config_file = os.path.join(current_dir, "../../data/config.json")
+            # 规范化路径
+            self.config_file = os.path.normpath(self.config_file)
+        else:
+            self.config_file = config_file
+        
+        print(f"📁 配置文件路径: {self.config_file}")
+        
         # 确保配置文件目录存在
         os.makedirs(os.path.dirname(self.config_file), exist_ok=True)
         self.config = self._load_config()

@@ -11,3 +11,9 @@ SpeechRecognition
 Pillow
 opencv-python
 socketio-client
+pyvts
+pyaudio
+numpy
+edge-tts
+dashscope>=1.25.2
+sounddevice

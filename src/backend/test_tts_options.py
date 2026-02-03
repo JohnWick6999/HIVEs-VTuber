@@ -1,48 +1,53 @@
-#!/usr/bin/env python3
-# 测试多种TTS方案
+import asyncio
+from voice_api import voice_api_system
+from vts_integration import vts_integration
 
-from voice_api import VoiceAPISystem
-import os
+async def test_tts_options():
+    """测试不同TTS引擎选项"""
+    print("🔍 测试TTS引擎选项...")
+    
+    test_text = "你好，我是一个虚拟主播，正在测试不同的TTS引擎。"
+    
+    # 优先测试通义千问TTS
+    print("\n1. 测试通义千问TTS...")
+    qwen_result = voice_api_system.text_to_speech(test_text, "test_qwen.wav", engine="qwen")
+    print(f"通义千问TTS结果: {'成功' if qwen_result else '失败'}")
+    
+    # 测试本地TTS
+    print("\n2. 测试本地TTS...")
+    local_result = voice_api_system.text_to_speech(test_text, "test_local.wav", engine="local")
+    print(f"本地TTS结果: {'成功' if local_result else '失败'}")
+    
+    # 测试Edge TTS（暂时放在后面）
+    print("\n3. 测试Edge TTS...")
+    edge_result = voice_api_system.text_to_speech(test_text, "test_edge.wav", engine="edge")
+    print(f"Edge TTS结果: {'成功' if edge_result else '失败'}")
+    
+    return True
 
-print("测试多种TTS方案...")
+async def test_virtual_audio():
+    """测试虚拟声卡/麦克风功能"""
+    print("\n🔍 测试虚拟音频功能...")
+    
+    test_text = "你好，我是一个虚拟主播，正在测试虚拟声卡功能。"
+    
+    # 测试语音生成和虚拟声卡播放
+    success = vts_integration.text_to_speech_with_lip_sync(test_text, "test_virtual.wav")
+    print(f"虚拟音频测试结果: {'成功' if success else '失败'}")
+    
+    return success
 
-# 创建语音API系统实例
-voice_api = VoiceAPISystem()
+async def main():
+    """主测试函数"""
+    print("🚀 开始测试TTS选项和虚拟音频功能...")
+    
+    # 测试TTS选项
+    await test_tts_options()
+    
+    # 测试虚拟音频
+    await test_virtual_audio()
+    
+    print("\n✅ 所有测试完成！")
 
-# 测试文本
-test_text = "你好，我是你的AI虚拟主播，很高兴认识你！"
-
-print(f"测试文本: {test_text}")
-print("=" * 60)
-
-# 测试1: 本地TTS (pyttsx3)
-print("\n测试1: 本地TTS (pyttsx3)")
-local_output = "test_local_tts.wav"
-local_result = voice_api._local_text_to_speech(test_text, local_output)
-
-if local_result and os.path.exists(local_output):
-    file_size = os.path.getsize(local_output) / 1024
-    print(f"✅ 本地TTS生成成功！")
-    print(f"文件大小: {file_size:.2f} KB")
-    os.remove(local_output)
-    print("测试文件已清理")
-else:
-    print("❌ 本地TTS生成失败")
-
-# 测试2: Edge TTS
-print("\n测试2: Edge TTS")
-edge_output = "test_edge_tts.mp3"
-# Edge TTS不需要API密钥，直接调用
-edge_result = voice_api._edge_text_to_speech("", "", test_text, "zh-CN-YunxiNeural", edge_output)
-
-if edge_result and os.path.exists(edge_output):
-    file_size = os.path.getsize(edge_output) / 1024
-    print(f"✅ Edge TTS生成成功！")
-    print(f"文件大小: {file_size:.2f} KB")
-    os.remove(edge_output)
-    print("测试文件已清理")
-else:
-    print("❌ Edge TTS生成失败")
-
-print("\n" + "=" * 60)
-print("测试完成！")
+if __name__ == "__main__":
+    asyncio.run(main())

@@ -727,129 +727,129 @@ namespace AIVtuberTool
         // 配置相关的类
         public class ConfigResponse
         {
-            public ChatApiConfig chat_api { get; set; }
-            public VoiceApiConfig voice_api { get; set; }
-            public ImageApiConfig image_api { get; set; }
-            public SearchApiConfig search_api { get; set; }
-            public DatabaseConfig database { get; set; }
-            public ObsConfig obs { get; set; }
-            public VtsConfig vtuber_studio { get; set; }
-            public PersonalityConfig personality { get; set; }
+            public ChatApiConfig chat_api { get; set; } = new ChatApiConfig();
+            public VoiceApiConfig voice_api { get; set; } = new VoiceApiConfig();
+            public ImageApiConfig image_api { get; set; } = new ImageApiConfig();
+            public SearchApiConfig search_api { get; set; } = new SearchApiConfig();
+            public DatabaseConfig database { get; set; } = new DatabaseConfig();
+            public ObsConfig obs { get; set; } = new ObsConfig();
+            public VtsConfig vtuber_studio { get; set; } = new VtsConfig();
+            public PersonalityConfig personality { get; set; } = new PersonalityConfig();
         }
 
         public class ConfigRequest
         {
-            public ChatApiConfig chat_api { get; set; }
-            public VoiceApiConfig voice_api { get; set; }
-            public ImageApiConfig image_api { get; set; }
-            public SearchApiConfig search_api { get; set; }
-            public DatabaseConfig database { get; set; }
-            public ObsConfig obs { get; set; }
-            public VtsConfig vtuber_studio { get; set; }
-            public PersonalityConfig personality { get; set; }
+            public ChatApiConfig chat_api { get; set; } = new ChatApiConfig();
+            public VoiceApiConfig voice_api { get; set; } = new VoiceApiConfig();
+            public ImageApiConfig image_api { get; set; } = new ImageApiConfig();
+            public SearchApiConfig search_api { get; set; } = new SearchApiConfig();
+            public DatabaseConfig database { get; set; } = new DatabaseConfig();
+            public ObsConfig obs { get; set; } = new ObsConfig();
+            public VtsConfig vtuber_studio { get; set; } = new VtsConfig();
+            public PersonalityConfig personality { get; set; } = new PersonalityConfig();
         }
 
         public class ChatApiConfig
         {
-            public string api_key { get; set; }
-            public string base_url { get; set; }
-            public string model { get; set; }
-            public double temperature { get; set; }
-            public int max_tokens { get; set; }
+            public string api_key { get; set; } = string.Empty;
+            public string base_url { get; set; } = string.Empty;
+            public string model { get; set; } = string.Empty;
+            public double temperature { get; set; } = 0.7;
+            public int max_tokens { get; set; } = 1000;
         }
 
         public class VoiceApiConfig
         {
-            public TtsConfig tts { get; set; }
-            public AsrConfig asr { get; set; }
+            public TtsConfig tts { get; set; } = new TtsConfig();
+            public AsrConfig asr { get; set; } = new AsrConfig();
         }
 
         public class TtsConfig
         {
-            public string api_key { get; set; }
-            public string base_url { get; set; }
-            public string voice { get; set; }
+            public string api_key { get; set; } = string.Empty;
+            public string base_url { get; set; } = string.Empty;
+            public string voice { get; set; } = "default";
         }
 
         public class AsrConfig
         {
-            public string api_key { get; set; }
-            public string base_url { get; set; }
+            public string api_key { get; set; } = string.Empty;
+            public string base_url { get; set; } = string.Empty;
         }
 
         public class ImageApiConfig
         {
-            public string api_key { get; set; }
-            public string base_url { get; set; }
+            public string api_key { get; set; } = string.Empty;
+            public string base_url { get; set; } = string.Empty;
         }
 
         public class SearchApiConfig
         {
-            public string api_key { get; set; }
-            public string base_url { get; set; }
+            public string api_key { get; set; } = string.Empty;
+            public string base_url { get; set; } = string.Empty;
         }
 
         public class DatabaseConfig
         {
-            public bool enabled { get; set; }
-            public string db_path { get; set; }
+            public bool enabled { get; set; } = false;
+            public string db_path { get; set; } = string.Empty;
         }
 
         public class ObsConfig
         {
-            public bool enabled { get; set; }
-            public string host { get; set; }
-            public int port { get; set; }
-            public string password { get; set; }
+            public bool enabled { get; set; } = false;
+            public string host { get; set; } = string.Empty;
+            public int port { get; set; } = 4444;
+            public string password { get; set; } = string.Empty;
         }
 
         public class VtsConfig
         {
-            public bool enabled { get; set; }
-            public string host { get; set; }
-            public int port { get; set; }
+            public bool enabled { get; set; } = false;
+            public string host { get; set; } = string.Empty;
+            public int port { get; set; } = 8001;
         }
 
         public class PersonalityConfig
         {
-            public string name { get; set; }
-            public string description { get; set; }
-            public string greeting { get; set; }
-            public string tone { get; set; }
+            public string name { get; set; } = string.Empty;
+            public string description { get; set; } = string.Empty;
+            public string greeting { get; set; } = string.Empty;
+            public string tone { get; set; } = string.Empty;
         }
 
         // 响应相关的类
         public class ChatResponse
         {
-            public string response { get; set; }
+            public string response { get; set; } = string.Empty;
         }
 
         public class AsrResponse
         {
-            public string text { get; set; }
+            public string text { get; set; } = string.Empty;
         }
 
         public class HealthResponse
         {
-            public string status { get; set; }
+            public string status { get; set; } = string.Empty;
         }
 
         public class StatusResponse
         {
-            public ObsStatus obs { get; set; }
-            public VtsStatus vts { get; set; }
+            public ObsStatus obs { get; set; } = new ObsStatus();
+            public VtsStatus vts { get; set; } = new VtsStatus();
         }
 
         public class ObsStatus
         {
-            public bool connected { get; set; }
-            public bool enabled { get; set; }
+            public bool connected { get; set; } = false;
+            public bool enabled { get; set; } = false;
         }
 
         public class VtsStatus
         {
-            public bool connected { get; set; }
-            public bool enabled { get; set; }
+            public bool connected { get; set; } = false;
+            public bool enabled { get; set; } = false;
         }
     }
 }

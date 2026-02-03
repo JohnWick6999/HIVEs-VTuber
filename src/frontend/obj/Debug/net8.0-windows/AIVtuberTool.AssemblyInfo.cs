@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("AIVtuberTool")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+2b8894b7940690c5e81b5f3cad870210742a209a")]
 [assembly: System.Reflection.AssemblyProductAttribute("AIVtuberTool")]
 [assembly: System.Reflection.AssemblyTitleAttribute("AIVtuberTool")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

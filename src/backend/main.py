@@ -91,6 +91,40 @@ async def text_to_speech(request: Dict[str, Any]):
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"TTS失败: {str(e)}")
 
+@app.post("/api/tts/realtime/start")
+async def start_realtime_tts():
+    """启动实时TTS流式播放"""
+    try:
+        # 这里可以集成实时TTS功能
+        # 目前返回模拟成功
+        return {"message": "实时TTS已启动", "status": "streaming"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"启动实时TTS失败: {str(e)}")
+
+@app.post("/api/tts/realtime/send")
+async def send_realtime_text(request: Dict[str, Any]):
+    """发送实时文本进行语音播放"""
+    try:
+        text = request.get("text", "")
+        if not text:
+            raise HTTPException(status_code=400, detail="文本不能为空")
+        
+        # 这里处理实时文本发送
+        # 目前返回模拟成功
+        return {"message": "文本已发送", "text": text}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"发送实时文本失败: {str(e)}")
+
+@app.post("/api/tts/realtime/stop")
+async def stop_realtime_tts():
+    """停止实时TTS流式播放"""
+    try:
+        # 这里处理停止实时TTS
+        # 目前返回模拟成功
+        return {"message": "实时TTS已停止", "status": "stopped"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"停止实时TTS失败: {str(e)}")
+
 @app.post("/api/asr")
 async def speech_to_text(request: Dict[str, Any]):
     """语音转文本"""

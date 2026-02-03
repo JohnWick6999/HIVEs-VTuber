@@ -58,17 +58,17 @@ namespace AIVtuberTool
             };
 
             // 快捷控制按钮
-            StartRecordingButton.Click += async (s, e) => await StartObsRecording();
-            StopRecordingButton.Click += async (s, e) => await StopObsRecording();
-            StartStreamingButton.Click += async (s, e) => await StartObsStreaming();
-            StopStreamingButton.Click += async (s, e) => await StopObsStreaming();
-            ConnectOBSButton.Click += async (s, e) => await ConnectToObs();
-            ConnectVTSButton.Click += async (s, e) => await ConnectToVts();
-            StartASRButton.Click += async (s, e) => await StartAsr();
+            StartRecordingButton.Click += async (s, e) => { await StartObsRecording(); };
+            StopRecordingButton.Click += async (s, e) => { await StopObsRecording(); };
+            StartStreamingButton.Click += async (s, e) => { await StartObsStreaming(); };
+            StopStreamingButton.Click += async (s, e) => { await StopObsStreaming(); };
+            ConnectOBSButton.Click += async (s, e) => { await ConnectToObs(); };
+            ConnectVTSButton.Click += async (s, e) => { await ConnectToVts(); };
+            StartASRButton.Click += async (s, e) => { await StartAsr(); };
             StopASRButton.Click += (s, e) => StopAsr();
 
             // 状态相关
-            RefreshConnectionButton.Click += async (s, e) => await RefreshStatus();
+            RefreshConnectionButton.Click += async (s, e) => { await RefreshStatus(); };
         }
 
         private void LoadInitialData()
@@ -499,30 +499,30 @@ namespace AIVtuberTool
 
         public class ChatResponse
         {
-            public string response { get; set; }
+            public string response { get; set; } = string.Empty;
         }
 
         public class AsrResponse
         {
-            public string text { get; set; }
+            public string text { get; set; } = string.Empty;
         }
 
         public class StatusResponse
         {
-            public ObsStatus obs { get; set; }
-            public VtsStatus vts { get; set; }
+            public ObsStatus obs { get; set; } = new ObsStatus();
+            public VtsStatus vts { get; set; } = new VtsStatus();
         }
 
         public class ObsStatus
         {
-            public bool connected { get; set; }
-            public bool enabled { get; set; }
+            public bool connected { get; set; } = false;
+            public bool enabled { get; set; } = false;
         }
 
         public class VtsStatus
         {
-            public bool connected { get; set; }
-            public bool enabled { get; set; }
+            public bool connected { get; set; } = false;
+            public bool enabled { get; set; } = false;
         }
     }
 }
