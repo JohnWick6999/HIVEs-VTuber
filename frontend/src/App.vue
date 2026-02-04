@@ -1,11 +1,14 @@
 <template>
-  <div class="app-container">
+  <div class="app-container" :class="{ 'dark-mode': isDarkMode }">
     <header class="app-header">
       <h1>HIVE's VTuber</h1>
       <div class="status-bar">
         <span :class="{ 'status-healthy': backendStatus === 'healthy' }">
           后端服务: {{ backendStatus === "healthy" ? "运行中" : "未运行" }}
         </span>
+        <button class="theme-toggle" @click="toggleDarkMode">
+          {{ isDarkMode ? '🌞' : '🌙' }}
+        </button>
       </div>
     </header>
 
@@ -49,7 +52,7 @@
           </li>
           <li class="version-info">
             <span class="tab-icon">📦</span>
-            <span>pre-version 0.0.1</span>
+            <span>pre-version 0.0.2</span>
           </li>
         </ul>
       </nav>
@@ -118,25 +121,11 @@
           <h2>OBS控制</h2>
           <div class="obs-container">
             <div class="obs-connection">
-              <button @click="connectOBS">连接OBS</button>
-              <button @click="disconnectOBS">断开OBS</button>
-              <div class="obs-status">{{ obsStatus }}</div>
+              <button @click="startOBSCmd">启动OBS-CMD</button>
+              <button @click="openOBS">打开OBS</button>
+              <button @click="closeOBS">关闭OBS</button>
             </div>
-            <div class="obs-controls">
-              <h3>录制控制</h3>
-              <button @click="startRecording">开始录制</button>
-              <button @click="stopRecording">停止录制</button>
-            </div>
-            <div class="obs-controls">
-              <h3>推流控制</h3>
-              <button @click="startStreaming">开始推流</button>
-              <button @click="stopStreaming">停止推流</button>
-            </div>
-            <div class="obs-controls">
-              <h3>场景设置</h3>
-              <input v-model="obsScene" type="text" placeholder="场景名称" />
-              <button @click="setOBSScene">设置场景</button>
-            </div>
+            <div class="obs-status">{{ obsStatus }}</div>
           </div>
         </div>
 
@@ -144,23 +133,10 @@
           <h2>VTuberStudio控制</h2>
           <div class="vts-container">
             <div class="vts-connection">
-              <button @click="connectVTS">连接VTuberStudio</button>
-              <div class="vts-status">{{ vtsStatus }}</div>
+              <button @click="openVTuberStudio">打开VTuberStudio</button>
+              <button @click="closeVTuberStudio">关闭VTuberStudio</button>
             </div>
-            <div class="vts-controls">
-              <h3>热键触发</h3>
-              <input v-model="vtsHotkey" type="text" placeholder="热键名称" />
-              <button @click="triggerVTSHotkey">触发热键</button>
-            </div>
-            <div class="vts-controls">
-              <h3>表情设置</h3>
-              <input
-                v-model="vtsExpression"
-                type="text"
-                placeholder="表情名称"
-              />
-              <button @click="setVTSExpression">设置表情</button>
-            </div>
+            <div class="vts-status">{{ vtsStatus }}</div>
           </div>
         </div>
 
@@ -208,7 +184,119 @@
                 </div>
               </div>
 
-              <!-- 其他配置部分省略，实际项目中需要完整实现 -->
+              <div class="config-section">
+                <h3>语音API</h3>
+                <div class="config-fields">
+                  <div class="field-group">
+                    <label>TTS API Key:</label>
+                    <input v-model="config.voice_api.tts.api_key" type="text" />
+                  </div>
+                  <div class="field-group">
+                    <label>TTS Base URL:</label>
+                    <input v-model="config.voice_api.tts.base_url" type="text" />
+                  </div>
+                  <div class="field-group">
+                    <label>TTS Voice:</label>
+                    <input v-model="config.voice_api.tts.voice" type="text" />
+                  </div>
+                  <div class="field-group">
+                    <label>TTS Engine:</label>
+                    <input v-model="config.voice_api.tts.engine" type="text" />
+                  </div>
+                  <div class="field-group">
+                    <label>ASR API Key:</label>
+                    <input v-model="config.voice_api.asr.api_key" type="text" />
+                  </div>
+                  <div class="field-group">
+                    <label>ASR Base URL:</label>
+                    <input v-model="config.voice_api.asr.base_url" type="text" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="config-section">
+                <h3>图像API</h3>
+                <div class="config-fields">
+                  <div class="field-group">
+                    <label>API Key:</label>
+                    <input v-model="config.image_api.api_key" type="text" />
+                  </div>
+                  <div class="field-group">
+                    <label>Base URL:</label>
+                    <input v-model="config.image_api.base_url" type="text" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="config-section">
+                <h3>搜索API</h3>
+                <div class="config-fields">
+                  <div class="field-group">
+                    <label>API Key:</label>
+                    <input v-model="config.search_api.api_key" type="text" />
+                  </div>
+                  <div class="field-group">
+                    <label>Base URL:</label>
+                    <input v-model="config.search_api.base_url" type="text" />
+                  </div>
+                  <div class="field-group">
+                    <label>Model:</label>
+                    <input v-model="config.search_api.model" type="text" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="config-section">
+                <h3>数据库配置</h3>
+                <div class="config-fields">
+                  <div class="field-group">
+                    <label>启用数据库:</label>
+                    <input v-model="config.database.enabled" type="checkbox" />
+                  </div>
+                  <div class="field-group">
+                    <label>数据库路径:</label>
+                    <input v-model="config.database.db_path" type="text" />
+                  </div>
+                </div>
+              </div>
+
+
+
+              <div class="config-section">
+                <h3>人格配置</h3>
+                <div class="config-fields">
+                  <div class="field-group">
+                    <label>名称:</label>
+                    <input v-model="config.personality.name" type="text" />
+                  </div>
+                  <div class="field-group">
+                    <label>描述:</label>
+                    <input v-model="config.personality.description" type="text" />
+                  </div>
+                  <div class="field-group">
+                    <label>问候语:</label>
+                    <input v-model="config.personality.greeting" type="text" />
+                  </div>
+                  <div class="field-group">
+                    <label>语气:</label>
+                    <input v-model="config.personality.tone" type="text" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="config-section">
+                <h3>软件地址</h3>
+                <div class="config-fields">
+                  <div class="field-group">
+                    <label>OBS软件地址:</label>
+                    <input v-model="config.software_paths.obs" type="text" placeholder="例如: C:\Program Files\obs-studio\bin\64bit\obs64.exe" />
+                  </div>
+                  <div class="field-group">
+                    <label>VTS软件地址:</label>
+                    <input v-model="config.software_paths.vts" type="text" placeholder="例如: C:\Program Files\VTuber Studio\VTuber Studio.exe" />
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -231,11 +319,9 @@ const ttsStatus = ref("");
 const asrText = ref("");
 const asrStatus = ref("");
 const obsStatus = ref("");
-const obsScene = ref("");
 const vtsStatus = ref("");
-const vtsHotkey = ref("");
-const vtsExpression = ref("");
 const configStatus = ref("");
+const isDarkMode = ref(false);
 
 // 配置数据
 const config = ref({
@@ -251,22 +337,45 @@ const config = ref({
       api_key: "",
       base_url: "",
       voice: "",
+      engine: "qwen",
     },
     asr: {
       api_key: "",
       base_url: "",
     },
   },
-  // 其他配置项
+  image_api: {
+    api_key: "",
+    base_url: "",
+  },
+  search_api: {
+    api_key: "",
+    base_url: "",
+    model: "",
+  },
+  database: {
+    enabled: false,
+    db_path: "chat_history.db",
+  },
+  personality: {
+    name: "AI Vtuber",
+    description: "一个友好的AI虚拟主播",
+    greeting: "你好！我是你的AI虚拟主播，很高兴认识你！",
+    tone: "活泼、友好、幽默",
+  },
+  software_paths: {
+    obs: "",
+    vts: "",
+  },
 });
 
 // API基础URL
-const API_BASE_URL = "http://localhost:8080";
+const API_BASE_URL = "http://localhost:8080/api";
 
 // 健康检查
 async function checkBackendHealth() {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/health`);
+    const response = await fetch(`${API_BASE_URL}/health`);
     const data = await response.json();
     backendStatus.value = data.status;
   } catch (error) {
@@ -291,7 +400,7 @@ async function sendMessage() {
 
   try {
     chatStatus.value = "发送中...";
-    const response = await fetch(`${API_BASE_URL}/api/chat`, {
+    const response = await fetch(`${API_BASE_URL}/chat`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ input: userMessage }),
@@ -325,7 +434,7 @@ async function generateTTS() {
 
   try {
     ttsStatus.value = "生成中...";
-    const response = await fetch(`${API_BASE_URL}/api/tts`, {
+    const response = await fetch(`${API_BASE_URL}/tts`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: ttsText.value, output_file: "output.wav" }),
@@ -348,7 +457,7 @@ async function generateTTS() {
 async function startASR() {
   try {
     asrStatus.value = "识别中...";
-    const response = await fetch(`${API_BASE_URL}/api/asr`, {
+    const response = await fetch(`${API_BASE_URL}/asr`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({}),
@@ -374,192 +483,171 @@ function stopASR() {
 }
 
 // OBS功能
-async function connectOBS() {
-  console.log("开始连接OBS...");
+async function startOBSCmd() {
   try {
-    console.log(`调用API端点: ${API_BASE_URL}/api/obs/connect`);
-    const response = await fetch(`${API_BASE_URL}/api/obs/connect`, {
+    obsStatus.value = "启动OBS-CMD...";
+    // 这里我们不需要启动obs-cmd进程，因为我们会在每个命令中直接调用它
+    // 检查obs-cmd是否可以正常工作
+    const testResponse = await fetch(`${API_BASE_URL}/obs/test`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({}),
     });
-    console.log(`API响应状态: ${response.status}`);
-    const data = await response.json();
-    console.log(`API响应数据: ${JSON.stringify(data)}`);
-    obsStatus.value = "连接OBS成功";
+    if (testResponse.ok) {
+      obsStatus.value = "OBS-CMD启动成功";
+    } else {
+      obsStatus.value = "OBS-CMD启动失败";
+    }
   } catch (error) {
-    console.error("连接OBS错误:", error);
-    obsStatus.value = "连接OBS失败";
+    console.error("启动OBS-CMD错误:", error);
+    obsStatus.value = "OBS-CMD启动失败";
   }
 }
 
-async function disconnectOBS() {
+
+
+async function openOBS() {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/obs/disconnect`, {
+    obsStatus.value = "打开OBS...";
+    const response = await fetch(`${API_BASE_URL}/obs/open`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: config.value.software_paths.obs }),
+    });
+    if (response.ok) {
+      obsStatus.value = "OBS已打开";
+    } else {
+      obsStatus.value = "打开OBS失败";
+    }
+  } catch (error) {
+    console.error("打开OBS错误:", error);
+    obsStatus.value = "打开OBS失败";
+  }
+}
+
+async function closeOBS() {
+  try {
+    obsStatus.value = "关闭OBS...";
+    const response = await fetch(`${API_BASE_URL}/obs/close`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({}),
     });
-    obsStatus.value = "断开OBS连接成功";
+    if (response.ok) {
+      obsStatus.value = "OBS已关闭";
+    } else {
+      obsStatus.value = "关闭OBS失败";
+    }
   } catch (error) {
-    obsStatus.value = "断开OBS连接失败";
-  }
-}
-
-async function startRecording() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/obs/recording/start`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({}),
-    });
-    obsStatus.value = "开始OBS录制成功";
-  } catch (error) {
-    obsStatus.value = "开始OBS录制失败";
-  }
-}
-
-async function stopRecording() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/obs/recording/stop`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({}),
-    });
-    obsStatus.value = "停止OBS录制成功";
-  } catch (error) {
-    obsStatus.value = "停止OBS录制失败";
-  }
-}
-
-async function startStreaming() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/obs/streaming/start`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({}),
-    });
-    obsStatus.value = "开始OBS推流成功";
-  } catch (error) {
-    obsStatus.value = "开始OBS推流失败";
-  }
-}
-
-async function stopStreaming() {
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/obs/streaming/stop`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({}),
-    });
-    obsStatus.value = "停止OBS推流成功";
-  } catch (error) {
-    obsStatus.value = "停止OBS推流失败";
-  }
-}
-
-async function setOBSScene() {
-  if (!obsScene.value.trim()) {
-    obsStatus.value = "场景名称不能为空";
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/obs/scene`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ scene_name: obsScene.value }),
-    });
-    obsStatus.value = "设置OBS场景成功";
-  } catch (error) {
-    obsStatus.value = "设置OBS场景失败";
+    console.error("关闭OBS错误:", error);
+    obsStatus.value = "关闭OBS失败";
   }
 }
 
 // VTuberStudio功能
-async function connectVTS() {
-  console.log("开始连接VTuberStudio...");
+async function openVTuberStudio() {
   try {
-    console.log(`调用API端点: ${API_BASE_URL}/api/vts/connect`);
-    const response = await fetch(`${API_BASE_URL}/api/vts/connect`, {
+    vtsStatus.value = "打开VTuberStudio...";
+    const response = await fetch(`${API_BASE_URL}/vts/open`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ path: config.value.software_paths.vts }),
+    });
+    if (response.ok) {
+      vtsStatus.value = "VTuberStudio已打开";
+    } else {
+      vtsStatus.value = "打开VTuberStudio失败";
+    }
+  } catch (error) {
+    console.error("打开VTuberStudio错误:", error);
+    vtsStatus.value = "打开VTuberStudio失败";
+  }
+}
+
+async function closeVTuberStudio() {
+  try {
+    vtsStatus.value = "关闭VTuberStudio...";
+    const response = await fetch(`${API_BASE_URL}/vts/close`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({}),
     });
-    console.log(`API响应状态: ${response.status}`);
-    const data = await response.json();
-    console.log(`API响应数据: ${JSON.stringify(data)}`);
-    vtsStatus.value = "连接VTuberStudio成功";
+    if (response.ok) {
+      vtsStatus.value = "VTuberStudio已关闭";
+    } else {
+      vtsStatus.value = "关闭VTuberStudio失败";
+    }
   } catch (error) {
-    console.error("连接VTuberStudio错误:", error);
-    vtsStatus.value = "连接VTuberStudio失败";
-  }
-}
-
-async function triggerVTSHotkey() {
-  if (!vtsHotkey.value.trim()) {
-    vtsStatus.value = "热键名称不能为空";
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/vts/hotkey`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ hotkey_name: vtsHotkey.value }),
-    });
-    vtsStatus.value = "触发VTuberStudio热键成功";
-  } catch (error) {
-    vtsStatus.value = "触发VTuberStudio热键失败";
-  }
-}
-
-async function setVTSExpression() {
-  if (!vtsExpression.value.trim()) {
-    vtsStatus.value = "表情名称不能为空";
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/api/vts/expression`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ expression_name: vtsExpression.value }),
-    });
-    vtsStatus.value = "设置VTuberStudio表情成功";
-  } catch (error) {
-    vtsStatus.value = "设置VTuberStudio表情失败";
+    console.error("关闭VTuberStudio错误:", error);
+    vtsStatus.value = "关闭VTuberStudio失败";
   }
 }
 
 // 配置功能
 async function loadConfig() {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/config`);
+    const response = await fetch(`${API_BASE_URL}/config`);
     const data = await response.json();
-    config.value = data;
+    console.log('从后端获取的配置数据:', data);
+    
+    // 直接更新配置
+    if (data.search_api) {
+      config.value.search_api = data.search_api;
+      console.log('更新搜索API配置:', config.value.search_api);
+    }
+    if (data.image_api) {
+      config.value.image_api = data.image_api;
+    }
+    if (data.database) {
+      config.value.database = data.database;
+    }
+    if (data.personality) {
+      config.value.personality = data.personality;
+    }
+    if (data.software_paths) {
+      config.value.software_paths = data.software_paths;
+    }
+    if (data.voice_api) {
+      config.value.voice_api = data.voice_api;
+      console.log('更新语音API配置:', config.value.voice_api);
+      console.log('语音API TTS配置:', config.value.voice_api.tts);
+    }
+    if (data.chat_api) {
+      config.value.chat_api = data.chat_api;
+    }
+    
     configStatus.value = "配置加载成功";
   } catch (error) {
+    console.error('加载配置失败:', error);
     configStatus.value = "配置加载失败";
   }
 }
 
 async function saveConfig() {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/config`, {
+    console.log("保存配置前的config.value:", config.value);
+    console.log("保存配置前的software_paths:", config.value.software_paths);
+    
+    const response = await fetch(`${API_BASE_URL}/config`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(config.value),
     });
+    
+    console.log("保存配置的响应状态:", response.status);
+    const responseData = await response.json();
+    console.log("保存配置的响应数据:", responseData);
+    
     configStatus.value = "配置保存成功";
   } catch (error) {
+    console.error("保存配置失败:", error);
     configStatus.value = "配置保存失败";
   }
 }
 
 async function resetConfig() {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/config`, {
+    const response = await fetch(`${API_BASE_URL}/config`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({}),
@@ -570,6 +658,13 @@ async function resetConfig() {
     configStatus.value = "配置重置失败";
   }
 }
+
+// 明暗模式切换
+function toggleDarkMode() {
+  isDarkMode.value = !isDarkMode.value;
+}
+
+
 
 // 初始化
 onMounted(() => {
@@ -583,8 +678,20 @@ onMounted(() => {
 .app-container {
   display: flex;
   flex-direction: column;
+  width: 100%;
   height: 100vh;
   font-family: Arial, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  background-color: #ffffff;
+  color: #333333;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.app-container.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
 }
 
 .app-header {
@@ -595,6 +702,11 @@ onMounted(() => {
   background-color: #2c3e50;
   color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.app-container.dark-mode .app-header {
+  background-color: #1e1e1e;
 }
 
 .app-header h1 {
@@ -605,16 +717,51 @@ onMounted(() => {
 .status-bar {
   display: flex;
   gap: 1rem;
+  align-items: center;
 }
 
 .status-healthy {
   color: #27ae60;
 }
 
+.theme-toggle {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  cursor: pointer;
+  padding: 0.5rem;
+  border-radius: 50%;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  color: white;
+}
+
+.theme-toggle:hover {
+  transform: rotate(180deg);
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.theme-toggle:active {
+  transform: rotate(180deg) scale(0.9);
+}
+
+.app-container.dark-mode .theme-toggle {
+  color: #e0e0e0;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.app-container.dark-mode .theme-toggle:hover {
+  background-color: rgba(255, 255, 255, 0.15);
+}
+
 .app-main {
   display: flex;
   flex: 1;
   overflow: hidden;
+  transition: background-color 0.3s ease;
+}
+
+.app-container.dark-mode .app-main {
+  background-color: #1e1e1e;
 }
 
 .sidebar {
@@ -625,6 +772,12 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   height: 100%;
+  transition: background-color 0.3s ease, width 0.3s ease;
+}
+
+.app-container.dark-mode .sidebar {
+  background-color: #1e1e1e;
+  border-right: 1px solid #333333;
 }
 
 .sidebar ul {
@@ -641,15 +794,27 @@ onMounted(() => {
   align-items: center;
   padding: 1rem;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 .sidebar li:hover {
   background-color: #2c3e50;
+  transform: translateX(5px);
+}
+
+.app-container.dark-mode .sidebar li:hover {
+  background-color: #2d2d2d;
+  transform: translateX(5px);
 }
 
 .sidebar li.active {
   background-color: #3498db;
+  transform: none;
+}
+
+.app-container.dark-mode .sidebar li.active {
+  background-color: #1e3a5f;
+  transform: none;
 }
 
 .tab-icon {
@@ -662,6 +827,11 @@ onMounted(() => {
   padding: 2rem;
   overflow-y: auto;
   background-color: #f5f5f5;
+  transition: background-color 0.3s ease;
+}
+
+.app-container.dark-mode .content {
+  background-color: #121212;
 }
 
 .tab-content {
@@ -669,6 +839,17 @@ onMounted(() => {
   border-radius: 8px;
   padding: 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.app-container.dark-mode .tab-content {
+  background-color: #1e1e1e;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  border: 1px solid #333333;
+}
+
+.app-container.dark-mode .tab-content h2 {
+  color: #e0e0e0;
 }
 
 .tab-content h2 {
@@ -691,6 +872,12 @@ onMounted(() => {
   border-radius: 4px;
   padding: 1rem;
   margin-bottom: 1rem;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.app-container.dark-mode .chat-history {
+  background-color: #1e1e1e;
+  border-color: #333333;
 }
 
 .user-message,
@@ -699,6 +886,7 @@ onMounted(() => {
   padding: 0.8rem;
   border-radius: 8px;
   max-width: 80%;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .user-message {
@@ -707,9 +895,19 @@ onMounted(() => {
   margin-left: auto;
 }
 
+.app-container.dark-mode .user-message {
+  background-color: #1e3a5f;
+  color: #e0e0e0;
+}
+
 .ai-message {
   align-self: flex-start;
   background-color: #f1f1f1;
+}
+
+.app-container.dark-mode .ai-message {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
 }
 
 .message-header {
@@ -718,11 +916,21 @@ onMounted(() => {
   margin-bottom: 0.5rem;
   font-size: 0.8rem;
   color: #333;
+  transition: color 0.3s ease;
+}
+
+.app-container.dark-mode .message-header {
+  color: #aaa;
 }
 
 .message-content {
   color: #222;
   line-height: 1.4;
+  transition: color 0.3s ease;
+}
+
+.app-container.dark-mode .message-content {
+  color: #e0e0e0;
 }
 
 .chat-input {
@@ -738,6 +946,13 @@ onMounted(() => {
   border-radius: 4px;
   color: #222;
   background-color: white;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.app-container.dark-mode .chat-input input {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  border-color: #333333;
 }
 
 .chat-input button {
@@ -747,25 +962,43 @@ onMounted(() => {
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .chat-input button:hover {
   background-color: #2980b9;
 }
 
+.app-container.dark-mode .chat-input button {
+  background-color: #1e3a5f;
+}
+
+.app-container.dark-mode .chat-input button:hover {
+  background-color: #1a3251;
+}
+
 /* 语音样式 */
 .voice-container {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
   gap: 2rem;
+  flex-wrap: wrap;
 }
 
 .tts-section,
 .asr-section {
+  flex: 1;
+  min-width: 300px;
   background-color: #f9f9f9;
   padding: 1.5rem;
   border-radius: 8px;
   border: 1px solid #ddd;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.app-container.dark-mode .tts-section,
+.app-container.dark-mode .asr-section {
+  background-color: #1e1e1e;
+  border-color: #333333;
 }
 
 .tts-section h3,
@@ -773,15 +1006,33 @@ onMounted(() => {
   margin-top: 0;
   color: #34495e;
   margin-bottom: 1rem;
+  transition: color 0.3s ease;
+}
+
+.app-container.dark-mode .tts-section h3,
+.app-container.dark-mode .asr-section h3 {
+  color: #e0e0e0;
 }
 
 .tts-section textarea {
   width: 100%;
-  padding: 0.8rem;
+  padding: 1rem;
   border: 1px solid #ddd;
   border-radius: 4px;
   resize: vertical;
   margin-bottom: 1rem;
+  min-height: 100px;
+  background-color: white;
+  color: #333;
+  font-size: 16px;
+  box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.app-container.dark-mode .tts-section textarea {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  border-color: #333333;
 }
 
 .asr-result {
@@ -791,6 +1042,13 @@ onMounted(() => {
   min-height: 100px;
   margin-bottom: 1rem;
   background-color: white;
+  transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+}
+
+.app-container.dark-mode .asr-result {
+  background-color: #2d2d2d;
+  border-color: #333333;
+  color: #e0e0e0;
 }
 
 .asr-buttons {
@@ -812,6 +1070,7 @@ onMounted(() => {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .obs-controls,
@@ -820,6 +1079,13 @@ onMounted(() => {
   padding: 1.5rem;
   border-radius: 8px;
   border: 1px solid #ddd;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.app-container.dark-mode .obs-controls,
+.app-container.dark-mode .vts-controls {
+  background-color: #1e1e1e;
+  border-color: #333333;
 }
 
 .obs-controls h3,
@@ -827,6 +1093,12 @@ onMounted(() => {
   margin-top: 0;
   color: #34495e;
   margin-bottom: 1rem;
+  transition: color 0.3s ease;
+}
+
+.app-container.dark-mode .obs-controls h3,
+.app-container.dark-mode .vts-controls h3 {
+  color: #e0e0e0;
 }
 
 .obs-controls input,
@@ -836,6 +1108,14 @@ onMounted(() => {
   border: 1px solid #ddd;
   border-radius: 4px;
   margin-bottom: 1rem;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.app-container.dark-mode .obs-controls input,
+.app-container.dark-mode .vts-controls input {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  border-color: #333333;
 }
 
 /* 配置样式 */
@@ -849,6 +1129,7 @@ onMounted(() => {
   display: flex;
   gap: 0.5rem;
   margin-bottom: 1rem;
+  flex-wrap: wrap;
 }
 
 .config-sections {
@@ -862,12 +1143,23 @@ onMounted(() => {
   padding: 1.5rem;
   border-radius: 8px;
   border: 1px solid #ddd;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+.app-container.dark-mode .config-section {
+  background-color: #1e1e1e;
+  border-color: #333333;
 }
 
 .config-section h3 {
   margin-top: 0;
   color: #34495e;
   margin-bottom: 1rem;
+  transition: color 0.3s ease;
+}
+
+.app-container.dark-mode .config-section h3 {
+  color: #e0e0e0;
 }
 
 .config-fields {
@@ -885,12 +1177,24 @@ onMounted(() => {
 .field-group label {
   font-size: 0.9rem;
   color: #555;
+  transition: color 0.3s ease;
+}
+
+.app-container.dark-mode .field-group label {
+  color: #aaa;
 }
 
 .field-group input {
   padding: 0.6rem;
   border: 1px solid #ddd;
   border-radius: 4px;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.app-container.dark-mode .field-group input {
+  background-color: #2d2d2d;
+  color: #e0e0e0;
+  border-color: #333333;
 }
 
 /* 通用按钮样式 */
@@ -900,15 +1204,26 @@ button {
   border-radius: 4px;
   cursor: pointer;
   font-size: 0.9rem;
-  transition: background-color 0.2s;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  background-color: #3498db;
+  color: white;
 }
 
 button:hover {
   opacity: 0.9;
+  transform: translateY(-2px);
 }
 
 button:active {
   transform: translateY(1px);
+}
+
+.app-container.dark-mode button {
+  background-color: #1e3a5f;
+}
+
+.app-container.dark-mode button:hover {
+  background-color: #1a3251;
 }
 
 /* 版本信息样式 */
@@ -917,6 +1232,11 @@ button:active {
   padding-top: 2rem;
   opacity: 0.7;
   font-size: 0.8rem;
+  transition: color 0.3s ease;
+}
+
+.app-container.dark-mode .version-info {
+  color: #aaa;
 }
 
 /* 状态样式 */
@@ -926,9 +1246,165 @@ button:active {
 .vts-status,
 .config-status {
   margin-top: 0.5rem;
-  padding: 0.5rem;
+  padding: 0;
   border-radius: 4px;
   font-size: 0.9rem;
+  transition: all 0.3s ease;
+  min-height: 0;
+  overflow: hidden;
+  background-color: transparent;
+  border: none;
+  color: transparent;
+}
+
+/* 当状态有内容时显示背景和边框 */
+.chat-status:not(:empty),
+.voice-status:not(:empty),
+.obs-status:not(:empty),
+.vts-status:not(:empty),
+.config-status:not(:empty) {
+  padding: 0.5rem;
+  background-color: #f5f5f5;
+  border: 1px solid #ddd;
+  color: #333;
+}
+
+.app-container.dark-mode .chat-status:not(:empty),
+.app-container.dark-mode .voice-status:not(:empty),
+.app-container.dark-mode .obs-status:not(:empty),
+.app-container.dark-mode .vts-status:not(:empty),
+.app-container.dark-mode .config-status:not(:empty) {
+  background-color: #1e1e1e;
+  color: #e0e0e0;
+  border: 1px solid #333333;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  /* 平板模式 */
+  .app-header {
+    padding: 1rem;
+  }
+  
+  .app-header h1 {
+    font-size: 1.2rem;
+  }
+  
+  .content {
+    padding: 1.5rem;
+  }
+  
+  .tab-content {
+    padding: 1.5rem;
+  }
+  
+  .config-fields {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 768px) {
+  /* 手机模式 */
+  .app-main {
+    flex-direction: column;
+  }
+  
+  .sidebar {
+    width: 100%;
+    padding: 0;
+    height: auto;
+  }
+  
+  .sidebar ul {
+    display: flex;
+    flex-direction: row;
+    overflow-x: auto;
+    padding: 0.5rem 0;
+  }
+  
+  .sidebar li {
+    white-space: nowrap;
+    padding: 0.8rem 1rem;
+    border-radius: 20px;
+    margin: 0 0.2rem;
+  }
+  
+  .sidebar li:hover {
+    transform: none;
+  }
+  
+  .sidebar li.active {
+    transform: none;
+  }
+  
+  .content {
+    padding: 1rem;
+  }
+  
+  .tab-content {
+    padding: 1rem;
+  }
+  
+  .chat-container {
+    height: 400px;
+  }
+  
+  .voice-container {
+    flex-direction: column;
+  }
+  
+  .tts-section,
+  .asr-section {
+    min-width: 100%;
+  }
+  
+  .obs-connection,
+  .vts-connection {
+    flex-direction: column;
+  }
+  
+  .config-buttons {
+    flex-direction: column;
+  }
+  
+  .config-fields {
+    grid-template-columns: 1fr;
+  }
+  
+  .theme-toggle {
+    font-size: 1.2rem;
+    padding: 0.3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  /* 小屏幕手机模式 */
+  .app-header {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+  
+  .status-bar {
+    width: 100%;
+    justify-content: space-between;
+  }
+  
+  .chat-input {
+    flex-direction: column;
+  }
+  
+  .chat-input button {
+    width: 100%;
+  }
+  
+  .asr-buttons {
+    flex-direction: column;
+  }
+  
+  .asr-buttons button {
+    width: 100%;
+  }
 }
 
 /* 响应式设计 */

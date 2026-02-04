@@ -39,12 +39,15 @@ public class VoiceApiSystem {
             // 强制刷新输出流
             System.out.flush();
 
+            System.out.println("获取配置管理器...");
             ConfigManager.Config config = configManager.getConfig();
             System.out.println("获取配置成功");
 
+            System.out.println("获取语音API配置...");
             ConfigManager.VoiceApiConfig voiceApiConfig = config.getVoice_api();
             System.out.println("获取语音API配置成功");
 
+            System.out.println("获取TTS配置...");
             ConfigManager.VoiceApiConfig.TtsConfig ttsConfig = voiceApiConfig.getTts();
             System.out.println("获取TTS配置成功");
 
@@ -66,26 +69,39 @@ public class VoiceApiSystem {
             // 如果配置不完整，返回失败
             if (apiKey.isEmpty() || baseUrl.isEmpty() || voice.isEmpty()) {
                 System.out.println("TTS配置不完整，返回失败");
+                System.out.println("- API Key: " + (apiKey.isEmpty() ? "空" : "非空"));
+                System.out.println("- Base URL: " + (baseUrl.isEmpty() ? "空" : baseUrl));
+                System.out.println("- Voice: " + (voice.isEmpty() ? "空" : voice));
                 System.out.flush();
                 return false;
             }
+            System.out.println("配置检查通过，继续执行...");
 
-            // 构建请求数据
+            // 构建请求数据（符合阿里云DashScope TTS API要求）
             Map<String, Object> requestData = new HashMap<>();
-            requestData.put("text", text);
-            requestData.put("voice", voice);
-            requestData.put("output_format", "wav");
-            requestData.put("engine", engine);
+            requestData.put("model", "qwen-t2s-v1"); // 使用固定的模型名称，符合阿里云DashScope TTS API要求
+
+            Map<String, Object> input = new HashMap<>();
+            input.put("text", text);
+            requestData.put("input", input);
+
+            Map<String, Object> parameters = new HashMap<>();
+            parameters.put("voice", voice);
+            requestData.put("parameters", parameters);
 
             System.out.println("请求数据构建成功: " + requestData);
             System.out.flush();
 
             // 发送请求到TTS API
             System.out.println("开始发送TTS API请求...");
+            System.out.println("- 请求URL: " + baseUrl);
+            System.out.println("- API Key: " + apiKey.substring(0, 5) + "..." + apiKey.substring(apiKey.length() - 5));
+            System.out.println("- 请求数据: " + requestData);
             System.out.flush();
 
             byte[] audioData = null;
             try {
+                System.out.println("调用sendTtsRequest方法...");
                 audioData = sendTtsRequest(baseUrl, apiKey, requestData);
                 System.out.println("TTS API请求成功，收到音频数据，长度: " + (audioData != null ? audioData.length : 0) + " 字节");
                 System.out.flush();
@@ -116,7 +132,11 @@ public class VoiceApiSystem {
             System.out.flush();
 
         } catch (Exception e) {
+            System.out.println("*****************************************************************");
             System.out.println("TTS处理异常:");
+            System.out.println("异常类型: " + e.getClass().getName());
+            System.out.println("异常消息: " + e.getMessage());
+            System.out.println("异常堆栈:");
             e.printStackTrace();
             System.out.flush();
             result = false;
@@ -287,8 +307,26 @@ public class VoiceApiSystem {
                 throw new Exception("TTS API 请求失败: " + responseString);
             }
 
-            System.out.println("TTS API 请求成功，返回音频数据");
-            return responseData;
+            // 解析响应，提取音频数据
+            System.out.println("开始解析TTS API响应...");
+            Map<String, Object> responseMap = objectMapper.readValue(responseString, Map.class);
+
+            if (responseMap.containsKey("output")) {
+                Map<String, Object> outputMap = (Map<String, Object>) responseMap.get("output");
+                if (outputMap.containsKey("audio")) {
+                    String audioBase64 = (String) outputMap.get("audio");
+                    System.out.println("提取到音频数据，长度: " + audioBase64.length() + " 字符");
+
+                    // 解码base64音频数据
+                    byte[] audioBytes = java.util.Base64.getDecoder().decode(audioBase64);
+                    System.out.println("解码后音频数据长度: " + audioBytes.length + " 字节");
+
+                    System.out.println("TTS API 请求成功，返回音频数据");
+                    return audioBytes;
+                }
+            }
+
+            throw new Exception("TTS API 响应格式错误，未找到音频数据");
 
         } catch (Exception e) {
             System.out.println("sendTtsRequest方法异常:");
