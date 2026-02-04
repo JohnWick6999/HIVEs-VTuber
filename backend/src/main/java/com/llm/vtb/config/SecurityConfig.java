@@ -22,9 +22,8 @@ public class SecurityConfig {
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .authorizeRequests(authorize -> authorize
                 .requestMatchers("/api/**").permitAll()
-                .anyRequest().authenticated()
-            )
-            .formLogin(form -> form.permitAll());
+                .anyRequest().permitAll()
+            );
 
         return http.build();
     }

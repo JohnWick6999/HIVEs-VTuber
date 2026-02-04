@@ -1,9 +1,8 @@
 com\llm\vtb\config\ConfigManager$VtsConfig.class
 com\llm\vtb\config\ConfigManager$ObsConfig.class
 com\llm\vtb\config\ConfigManager$VoiceApiConfig.class
-com\llm\vtb\obs\ObsVtsSystem$WebSocketClient.class
 com\llm\vtb\config\ConfigManager.class
-com\llm\vtb\obs\ObsVtsSystem$2.class
+com\llm\vtb\config\ConfigManager$SoftwarePathsConfig.class
 com\llm\vtb\voice\VoiceApiSystem.class
 com\llm\vtb\config\ConfigManager$VoiceApiConfig$TtsConfig.class
 com\llm\vtb\config\ConfigManager$ChatApiConfig.class
@@ -13,7 +12,6 @@ com\llm\vtb\config\SecurityConfig.class
 com\llm\vtb\config\ConfigManager$ImageApiConfig.class
 com\llm\vtb\config\ConfigManager$VoiceApiConfig$AsrConfig.class
 com\llm\vtb\obs\ObsVtsSystem.class
-com\llm\vtb\obs\ObsVtsSystem$SimpleWebSocketClient.class
 com\llm\vtb\obs\ObsVtsSystem$1.class
 com\llm\vtb\ai\AiChatSystem.class
 com\llm\vtb\Application.class

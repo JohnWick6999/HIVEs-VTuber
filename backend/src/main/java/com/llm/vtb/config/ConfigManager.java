@@ -76,6 +76,7 @@ public class ConfigManager {
         defaultConfig.setObs(new ObsConfig());
         defaultConfig.setVtuber_studio(new VtsConfig());
         defaultConfig.setPersonality(new PersonalityConfig());
+        defaultConfig.setSoftware_paths(new SoftwarePathsConfig());
         return defaultConfig;
     }
 
@@ -96,6 +97,7 @@ public class ConfigManager {
         private ObsConfig obs;
         private VtsConfig vtuber_studio;
         private PersonalityConfig personality;
+        private SoftwarePathsConfig software_paths;
 
         public ChatApiConfig getChat_api() {
             return chat_api;
@@ -159,6 +161,14 @@ public class ConfigManager {
 
         public void setPersonality(PersonalityConfig personality) {
             this.personality = personality;
+        }
+
+        public SoftwarePathsConfig getSoftware_paths() {
+            return software_paths;
+        }
+
+        public void setSoftware_paths(SoftwarePathsConfig software_paths) {
+            this.software_paths = software_paths;
         }
     }
 
@@ -406,6 +416,7 @@ public class ConfigManager {
         private boolean enabled = false;
         private String host = "localhost";
         private int port = 8001;
+        private String password = "";
 
         public boolean isEnabled() {
             return enabled;
@@ -429,6 +440,14 @@ public class ConfigManager {
 
         public void setPort(int port) {
             this.port = port;
+        }
+
+        public String getPassword() {
+            return password;
+        }
+
+        public void setPassword(String password) {
+            this.password = password;
         }
     }
 
@@ -468,6 +487,27 @@ public class ConfigManager {
 
         public void setTone(String tone) {
             this.tone = tone;
+        }
+    }
+
+    public static class SoftwarePathsConfig {
+        private String obs = "";
+        private String vts = "";
+
+        public String getObs() {
+            return obs;
+        }
+
+        public void setObs(String obs) {
+            this.obs = obs;
+        }
+
+        public String getVts() {
+            return vts;
+        }
+
+        public void setVts(String vts) {
+            this.vts = vts;
         }
     }
 }
