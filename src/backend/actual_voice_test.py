@@ -5,6 +5,7 @@
 绕过所有导入问题，直接测试实际音频播放
 """
 
+import os
 import time
 import base64
 import threading
@@ -22,7 +23,7 @@ def test_actual_voice():
         import pyaudio
         
         # 配置API密钥
-        dashscope.api_key = "sk-a5e4d75ae5aa4961acc01d5a71f7b117"
+        dashscope.api_key = os.getenv("DASHSCOPE_API_KEY", "")
         
         print("✅ 依赖库导入成功")
         

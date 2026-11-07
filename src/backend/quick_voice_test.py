@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # 快速测试严格按照原始预设创建的音色
 
+import os
 import dashscope
 from dashscope.audio.qwen_tts_realtime import QwenTtsRealtime, QwenTtsRealtimeCallback, AudioFormat
 import pyaudio
@@ -11,7 +12,7 @@ import threading
 def test_original_voice():
     """测试严格按照原始预设创建的音色"""
     # 配置
-    dashscope.api_key = 'sk-a5e4d75ae5aa4961acc01d5a71f7b117'
+    dashscope.api_key = os.getenv("DASHSCOPE_API_KEY", "")
     voice_name = 'qwen-tts-vc-loli_voice-voice-20260204011321205-6164'
     
     print(f'🧪 测试严格按照原始预设创建的音色: {voice_name}')

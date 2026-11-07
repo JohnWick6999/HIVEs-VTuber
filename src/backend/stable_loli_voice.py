@@ -5,6 +5,7 @@
 基于成功复刻的结果，提供稳定可靠的音色服务
 """
 
+import os
 import dashscope
 from dashscope.audio.qwen_tts_realtime import QwenTtsRealtime, QwenTtsRealtimeCallback, AudioFormat
 import pyaudio
@@ -18,7 +19,7 @@ class StableLoliVoice:
     
     def __init__(self):
         # 配置API密钥
-        self.api_key = "sk-a5e4d75ae5aa4961acc01d5a71f7b117"
+        self.api_key = os.getenv("DASHSCOPE_API_KEY", "")
         dashscope.api_key = self.api_key
         
         # 音色参数（经过验证的最佳配置）

@@ -5,6 +5,7 @@
 专门测试最夸张的傲娇音色效果
 """
 
+import os
 import dashscope
 from dashscope.audio.qwen_tts_realtime import QwenTtsRealtime, QwenTtsRealtimeCallback, AudioFormat
 import pyaudio
@@ -19,7 +20,7 @@ def test_princess_voice():
     print("=" * 30)
     
     # 配置
-    dashscope.api_key = "sk-a5e4d75ae5aa4961acc01d5a71f7b117"
+    dashscope.api_key = os.getenv("DASHSCOPE_API_KEY", "")
     
     # 音频队列
     audio_queue = queue.Queue()

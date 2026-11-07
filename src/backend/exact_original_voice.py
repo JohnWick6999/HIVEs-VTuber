@@ -5,6 +5,7 @@
 完全复制test_loli_voice.py中的参数和逻辑
 """
 
+import os
 import base64
 import pathlib
 import requests
@@ -18,7 +19,7 @@ def create_exact_original_voice():
     print("=" * 50)
     
     # 使用您原始代码中的确切参数
-    api_key = "sk-a5e4d75ae5aa4961acc01d5a71f7b117"
+    api_key = os.getenv("DASHSCOPE_API_KEY", "")
     audio_file = "../../data/voice/e3fd62b8656da51a240754cb3919d3ea.mp3"
     preferred_name = "loli_voice"
     
@@ -141,7 +142,7 @@ def test_created_voice(voice_name):
         import threading
         
         # 配置API密钥
-        dashscope.api_key = "sk-a5e4d75ae5aa4961acc01d5a71f7b117"
+        dashscope.api_key = os.getenv("DASHSCOPE_API_KEY", "")
         
         # 测试文本 - 使用您的原始测试文本
         test_text = "你好，我是可爱的萝莉，我的声音又甜又萌，希望大家喜欢我哦～喵呜～"

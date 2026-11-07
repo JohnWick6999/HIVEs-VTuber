@@ -5,6 +5,7 @@
 使用您昨天的设计理念重新创建的音色
 """
 
+import os
 import dashscope
 from dashscope.audio.qwen_tts_realtime import QwenTtsRealtime, QwenTtsRealtimeCallback, AudioFormat
 import pyaudio
@@ -19,7 +20,7 @@ def test_new_loli_voice():
     print("=" * 30)
     
     # 配置
-    dashscope.api_key = "sk-a5e4d75ae5aa4961acc01d5a71f7b117"
+    dashscope.api_key = os.getenv("DASHSCOPE_API_KEY", "")
     loli_voice_name = "qwen-tts-vc-new_loli_voice-voice-20260204010829410-44f8"
     
     print(f"🎯 使用音色: {loli_voice_name}")

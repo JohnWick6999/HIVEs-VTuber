@@ -4,6 +4,7 @@
 简单的通义千问实时TTS测试
 """
 
+import os
 import dashscope
 from dashscope.audio.tts_v2 import SpeechSynthesizer, AudioFormat
 import pyaudio
@@ -12,7 +13,7 @@ import threading
 import time
 
 # 配置API密钥
-dashscope.api_key = "sk-a5e4d75ae5aa4961acc01d5a71f7b117"
+dashscope.api_key = os.getenv("DASHSCOPE_API_KEY", "")
 
 class TTSResultCallback:
     """TTS结果回调类"""

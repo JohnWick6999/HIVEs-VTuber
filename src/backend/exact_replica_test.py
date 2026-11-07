@@ -78,7 +78,7 @@ def direct_api_test():
         import time
         
         # 配置API密钥
-        dashscope.api_key = "sk-a5e4d75ae5aa4961acc01d5a71f7b117"
+        dashscope.api_key = os.getenv("DASHSCOPE_API_KEY", "")
         
         # 音频队列
         audio_queue = queue.Queue()

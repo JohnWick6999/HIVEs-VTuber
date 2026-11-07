@@ -41,7 +41,7 @@ def test_yesterday_voice():
             api_key = config_data.get('voice_api', {}).get('tts', {}).get('api_key')
         else:
             # 使用硬编码的API密钥（从之前的测试中获取）
-            api_key = "sk-a5e4d75ae5aa4961acc01d5a71f7b117"
+            api_key = os.getenv("DASHSCOPE_API_KEY", "")
         
         if not api_key:
             print("❌ 未找到API密钥")

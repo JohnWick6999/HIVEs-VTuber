@@ -4,6 +4,7 @@
 查询可用的自定义音色
 """
 
+import os
 import dashscope
 from dashscope.audio.tts_v2 import VoiceEnrollmentService
 
@@ -13,7 +14,7 @@ def check_available_voices():
     print("=" * 30)
     
     # 配置API密钥
-    dashscope.api_key = "sk-a5e4d75ae5aa4961acc01d5a71f7b117"
+    dashscope.api_key = os.getenv("DASHSCOPE_API_KEY", "")
     
     try:
         # 创建音色服务实例
@@ -48,7 +49,7 @@ def recreate_loli_voice():
         import requests
         
         # 配置
-        api_key = "sk-a5e4d75ae5aa4961acc01d5a71f7b117"
+        api_key = os.getenv("DASHSCOPE_API_KEY", "")
         headers = {
             "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json"
