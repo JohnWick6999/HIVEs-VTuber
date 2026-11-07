@@ -1,5 +1,5 @@
 <div align="center">
-<img src="preview/show.jpg" width="100%" />
+
 
 # HIVE's VTuber
 
