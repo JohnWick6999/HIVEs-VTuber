@@ -1,0 +1,11 @@
+numpy
+cachetools
+requests
+fastapi
+httpx
+openai
+uvicorn
+cachetools
+requests
+python-multipart
+dashscope

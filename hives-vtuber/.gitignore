@@ -1,0 +1,11 @@
+**/__pycache__
+.venv/
+.idea/*
+users.db
+assets/*/memory.bin
+utils/dashscope2.py
+
+web/character2.html
+web/dialog-realtime2.html
+
+.env

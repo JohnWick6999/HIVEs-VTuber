@@ -35,8 +35,12 @@ public class AiChatSystem {
 
             // 使用默认配置（如果用户未配置）
             if (apiKey.isEmpty()) {
-                apiKey = "***REMOVED***"; // 使用原有项目的 DeepSeek API Key
-                System.out.println("使用默认 DeepSeek API Key");
+                // 不在此处硬编码任何密钥：优先读环境变量，未配置则给出明确提示
+                apiKey = System.getenv("DEEPSEEK_API_KEY");
+                if (apiKey == null || apiKey.trim().isEmpty()) {
+                    return "未配置 DeepSeek API Key：请在配置页填写 chat_api.api_key，或设置环境变量 DEEPSEEK_API_KEY。";
+                }
+                System.out.println("使用环境变量 DEEPSEEK_API_KEY");
             }
             if (baseUrl.isEmpty()) {
                 baseUrl = "https://api.deepseek.com"; // 使用原有项目的 DeepSeek API Base URL
@@ -50,7 +54,7 @@ public class AiChatSystem {
             System.out.println("准备调用 AI API: ");
             System.out.println("- Model: " + model);
             System.out.println("- Base URL: " + baseUrl);
-            System.out.println("- API Key: " + apiKey.substring(0, 5) + "..." + apiKey.substring(apiKey.length() - 5));
+            System.out.println("- API Key: " + (apiKey.isEmpty() ? "<未配置>" : "<已配置>"));
             System.out.println("- User Input: " + userInput);
 
             // 构建请求数据

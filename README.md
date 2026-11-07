@@ -8,6 +8,17 @@ HIVE's VTuber (VSP) 是一个集成了AI聊天、语音合成、OBS控制和VTub
 
 - **版本**: pre-version 0.0.2
 
+### 仓库结构
+
+本仓库以「互不融合」的方式并存两个独立项目：
+
+| 目录 | 项目 | 说明 |
+|---|---|---|
+| `backend/` `frontend/` `deploy/` | VSP 控制端（Java + Vue） | AI 聊天、语音、OBS / VTube Studio 控制 |
+| [`hives-vtuber/`](hives-vtuber/) | 数字人（Web）项目 | 浏览器内渲染的 VTuber 数字人：会说话、有表情、有记忆，支持 Web / Electron / Android / 小程序 |
+
+两个项目目前相互独立，尚未做代码融合，各自的运行方式见下文。
+
 ## 新版本更新 (pre-version 0.0.2)
 
 ### 前端功能增强
@@ -126,8 +137,54 @@ Project_LLM_VTB-VSP/
 │   ├── assets/           # 静态资源
 │   ├── index.html        # 主HTML文件
 │   └── README.md         # 部署说明
+├── hives-vtuber/         # 新增：数字人（VTuber）Web 项目，独立运行
 └── README.md             # 项目说明
 ```
+
+## 数字人项目（hives-vtuber/）
+
+`hives-vtuber/` 是本仓库新增的**数字人（VTuber）Web 项目**，与原 VSP 控制端相互独立、暂未融合。
+
+### 功能简介
+
+| 能力 | 说明 |
+|---|---|
+| 🎭 数字人实时渲染 | 浏览器端 Canvas + WebAssembly 引擎，视频素材 + 驱动数据逐帧合成，无需服务端 GPU |
+| 🗣️ 全链路语音对话 | 录音 → 实时 ASR → 大模型流式回复 → TTS 流式合成 → 口型 / 表情驱动 |
+| 🧠 长期记忆 | 768 维向量记忆库，长短期记忆融合，支持记忆持久化与跨设备同步 |
+| 😊 情感与表情 | 情绪标签驱动表情、语调与肢体动作 |
+| 👤 多角色管理 | 形象创建、绑定音色、人设设定、背景切换、删除 |
+| 🎙️ 音色克隆 | CosyVoice 音色克隆与腾讯云大模型音色 |
+| 📱 多端共用 | Web / Electron / Android / 微信小程序共享同一套核心代码 |
+
+### 数字人实现要点
+
+- 一个形象 = `assets/<avatar_id>/` 下的循环视频 `01.webm` + 驱动数据 `combined_data.json.gz` + 缩略图 + 记忆文件 `memory.bin`
+- `web/js/DHLiveMini2.js` 加载内置的 `web/wasm/DHLiveMini2.wasm`（约 5MB）完成渲染，`web/js/MiniLive.js` 负责视频取帧与绘制调度
+- 对话接口 `POST /chat/chat_stream`（SSE 流式），返回文本按句切分后立即送往 TTS，边合成边播放
+
+### 快速开始
+
+```bash
+cd hives-vtuber
+./start.sh          # 首次运行自动创建虚拟环境并安装依赖
+# 或
+pip install -r requirements.txt && python main.py
+```
+
+打开 http://localhost:8000/ 即可（自动跳转到形象展示页）。
+
+### 配置（环境变量）
+
+| 变量 | 必填 | 说明 |
+|---|---|---|
+| `DASHSCOPE_API_KEY` | 对话必填 | 阿里云百炼 API Key |
+| `HIVES_VTUBER_KEY` | 创建形象必填 | 形象平台密钥 |
+| `HIVES_VTUBER_PLATFORM_BASE` / `HIVES_VTUBER_ASSET_BASE` / `HIVES_VTUBER_WEB_BASE` | 可选 | 外部服务地址 |
+
+> 仓库中不包含任何 API Key，请自行填写；外部服务地址集中在 `hives-vtuber/utils/services.py` 及各端 `services` 配置文件中。
+
+完整说明见 [`hives-vtuber/README_zh.md`](hives-vtuber/README_zh.md)。
 
 ## 安装部署
 
